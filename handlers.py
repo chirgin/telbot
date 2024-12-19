@@ -14,7 +14,7 @@ router = Router()
 def Insert_to_DB(id_user: str, film_name: str) -> None:
     connection = sqlite3.connect('requests.db')
     cursor = connection.cursor()
-    cursor.execute('INSERT INTO Requests (id_user, film, date) VALUES (?, ?, ?)',
+    cursor.execute('INSERT INTO requests (id_user, film, date) VALUES (?, ?, ?)',
                     (id_user, film_name, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
     connection.commit()
     connection.close()
@@ -73,7 +73,7 @@ async def start_handler(msg: Message):
 async def history_handler(msg: Message):
     connection = sqlite3.connect('requests.db')
     cursor = connection.cursor()
-    cursor.execute(f'SELECT film, date FROM Requests WHERE id_user=={msg.from_user.id}')
+    cursor.execute(f'SELECT film, date FROM requests WHERE id_user=={msg.from_user.id}')
     results = cursor.fetchall()
     await msg.answer(f"История поиска фильмов пользователем {msg.from_user.full_name}")
     res = ''
@@ -88,7 +88,7 @@ async def history_handler(msg: Message):
 async def stats_handler(msg: Message):
     connection = sqlite3.connect('requests.db')
     cursor = connection.cursor()
-    cursor.execute(f'SELECT film, COUNT(*) FROM Requests WHERE id_user=={msg.from_user.id} GROUP BY film')
+    cursor.execute(f'SELECT film, COUNT(*) FROM requests WHERE id_user=={msg.from_user.id} GROUP BY film')
     results = cursor.fetchall()
     await msg.answer(f"Статистика поиска фильмов пользователем {msg.from_user.full_name}:")
     res = ''
